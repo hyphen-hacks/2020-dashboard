@@ -1,0 +1,123 @@
+@import "vars";
+
+html, body, #app, .app__container {
+  width: 100%;
+  height: 100%;
+  background: $dark;
+  color: $text;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#app__container {
+  display: grid;
+  grid-template-columns: 25rem auto;
+}
+
+#nav {
+  background: $bg;
+  @include shadow;
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+.nav__user {
+  margin-top: auto;
+  padding: $spacing;
+  border-top: 2px solid;
+
+  button {
+    margin-top: 0.5rem;
+  }
+}
+
+.nav__link {
+  @include transition;
+  color: $text;
+  font-weight: bold;
+  display: block;
+  padding: $spacing;
+  text-decoration: none;
+
+  &:hover {
+    background: $bg--hover;
+  }
+}
+
+.nav__link.active {
+  background: $bg--hover;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  padding: $spacing;
+
+  img {
+    height: 3rem;
+    margin-right: 0.5rem;
+
+  }
+}
+.columns {
+  display: grid;
+  grid-template-columns: auto 25rem;
+  .column {
+    @include shadow;
+    background: $bg;
+  }
+}
+.page {
+  padding: $spacing;
+  height: 100vh;
+  overflow-y: scroll;
+}
+
+#login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .card {
+    max-width: 500px;
+  }
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin: 0.5rem 0;
+
+  }
+
+  button {
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+}
+.loader--full {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: $dark;
+  display: grid;
+  z-index: 99999999;
+  grid-template-rows: 1fr 1fr 1fr;
+  .loader__row {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .sk-cube-grid {
+    margin-bottom: 1rem;
+  }
+}
