@@ -63,6 +63,13 @@ $text: white;
 }
 
 @mixin input {
+  background: $dark;
+  border: none;
+  @include rounding;
+  padding: 1rem;
+  font-size: 1rem;
+  color: $text;
+  appearance: none;
   @apply bg-gray p-2 border-4 border-gray rounded-sm duration-200 text-white font-normal;
 }
 @mixin input--hover {
@@ -132,13 +139,23 @@ select.input {
   font-size: 1.5rem;
   font-weight: bold;
 }
-.card {
+@mixin card {
   @include shadow;
   @include rounding;
   background: $bg;
   padding: $spacing;
   display: flex;
   flex-direction: column;
+}
+@mixin card--hover {
+  @include transition;
+
+    background: color.adjust($bg, $lightness: 10);
+
+
+}
+.card {
+@include card;
 }
 .mt-1 {
   margin-top: 1rem;

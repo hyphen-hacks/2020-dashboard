@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import firebase from 'firebase/app'
 import swal from 'sweetalert'
+import moment from 'moment'
+import * as JsSearch from 'js-search';
 import 'firebase/auth'
 import 'firebase/performance'
 import 'firebase/remote-config'
@@ -24,6 +26,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 Vue.prototype.$firebase = firebase
 Vue.prototype.$swal = swal
+Vue.prototype.$moment = moment
+Vue.prototype.$JsSearch = JsSearch
 new Vue({
   router,
   store,
