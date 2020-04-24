@@ -21,7 +21,7 @@
 
       </div>
       <div class="people">
-        <div @click="openPerson(app)" :key="app['_id']" v-for="app in searched" class="appliedPerson">
+        <div @click="openPerson(app)" :class="{active:chosen == app['_id']} " :key="app['_id']" v-for="app in searched" class="appliedPerson">
           <p>{{app.firstName}} {{app.lastName}}</p>
           <p>{{app.application.school? app.application.school : app.application.company}}</p>
           <p class="right">{{app.role}}</p>

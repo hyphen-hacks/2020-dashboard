@@ -140,9 +140,8 @@ let focus, blur, tokenRefresh
               this.$store.commit("user", user)
               this.$store.commit("token", idToken)
               this.firebaseLoaded = true
-              tokenRefresh =   window.setInterval(getToken("interval"), 900000)
-             focus = window.addEventListener("focus", getToken("focus"), false);
-              blur = window.addEventListener("blur", getToken("blur"), false);
+              tokenRefresh =   window.setInterval(function (){getToken("interval")}, 900000)
+             focus = window.addEventListener("focus", function() {getToken("focus")}, false);
 
           this.loadBasicData()
             }).catch(function (error) {
