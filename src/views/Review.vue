@@ -21,7 +21,8 @@
 
       </div>
       <div class="people">
-        <div @click="openPerson(app)" :class="{active:chosen == app['_id']} " :key="app['_id']" v-for="app in searched" class="appliedPerson">
+        <div @click="openPerson(app)" :class="{active:chosen == app['_id']} " :key="app['_id']" v-for="app in searched"
+             class="appliedPerson">
           <p>{{app.firstName}} {{app.lastName}}</p>
           <p>{{app.application.school? app.application.school : app.application.company}}</p>
           <p class="right">{{app.role}}</p>
@@ -56,31 +57,41 @@
         <p class="sectionTitle">Questions</p>
         <div v-if="focusedApp.role == 'mentor'">
           <p class="question">Experience Attending Hackathons: <span>{{focusedApp.application.expAttending}}</span></p>
-          <p class="question">Experience Mentoring or Judging Hackathons: <span>{{focusedApp.application.expMentoringJudging}}</span></p>
-          <p class="question">Experience Working with High School Students: <span>{{focusedApp.application.expWorkingWithStudents}}</span></p>
+          <p class="question">Experience Mentoring or Judging Hackathons: <span>{{focusedApp.application.expMentoringJudging}}</span>
+          </p>
+          <p class="question">Experience Working with High School Students: <span>{{focusedApp.application.expWorkingWithStudents}}</span>
+          </p>
           <p class="question">Areas of expertise: <span>{{focusedApp.application.areasOfExpertise}}</span></p>
         </div>
         <div v-if="focusedApp.role == 'attendee'">
-          <p class="question">Why do you want to attend?: <span>{{focusedApp.application.whyDoYouWantToAttend}}</span></p>
-          <p class="question">Experience with software development: <span>{{focusedApp.application.experienceSoftware}}</span></p>
-          <p class="question">Experience with hardware development: <span>{{focusedApp.application.experienceHardware}}</span></p>
-          <p class="question">Experience with hackathons: <span>{{focusedApp.application.experienceHackathon}}</span></p>
-          <p class="question">Experience with team coding: <span>{{focusedApp.application.experienceTeamCoding}}</span></p>
-          <p class="question">Description of computer science experience: <span>{{focusedApp.application.descriptionCompSciExp}}</span></p>
+          <p class="question">Why do you want to attend?: <span>{{focusedApp.application.whyDoYouWantToAttend}}</span>
+          </p>
+          <p class="question">Experience with software development:
+            <span>{{focusedApp.application.experienceSoftware}}</span></p>
+          <p class="question">Experience with hardware development:
+            <span>{{focusedApp.application.experienceHardware}}</span></p>
+          <p class="question">Experience with hackathons: <span>{{focusedApp.application.experienceHackathon}}</span>
+          </p>
+          <p class="question">Experience with team coding: <span>{{focusedApp.application.experienceTeamCoding}}</span>
+          </p>
+          <p class="question">Description of computer science experience: <span>{{focusedApp.application.descriptionCompSciExp}}</span>
+          </p>
           <p class="info">Coming with team: <span>{{focusedApp.application.team? "Yes" : "No"}}</span></p>
 
         </div>
         <p class="sectionTitle">Logistics</p>
-        <p v-if="focusedApp.role == 'attendee'" class="info">Laptop: <span>{{focusedApp.application.laptop? "Yes" : "No"}}</span></p>
+        <p v-if="focusedApp.role == 'attendee'" class="info">Laptop: <span>{{focusedApp.application.laptop? "Yes" : "No"}}</span>
+        </p>
         <p class="question">Food Allergies: <span>{{objList(focusedApp.application.foodAllergies)}}</span></p>
-        <p class="question">Dietary Restrictions: <span>{{objList(focusedApp.application.dietaryRestrictions)}}</span></p>
+        <p class="question">Dietary Restrictions: <span>{{objList(focusedApp.application.dietaryRestrictions)}}</span>
+        </p>
         <p class="question">Accommodations: <span>{{focusedApp.application.accommodations}}</span></p>
         <p class="info">Shirt Size: <span>{{focusedApp.application.shirtSize}}</span></p>
         <p class="question">Referrers: <span>{{objList(focusedApp.application.referrers)}}</span></p>
         <p class="question">Comments: <span>{{focusedApp.application.comments}}</span></p>
       </div>
       <div class="actions">
-        <button class="btn">Accept</button>
+        <button class="btn" @click="accept(focusedApp['_id'])">Accept</button>
         <button class="btn--dark">Decline</button>
       </div>
     </div>
@@ -109,11 +120,56 @@
       }
     },
     methods: {
+      accept(id) {
+        console.log("accpting", id)
+
+
+        fetch(this.$store.getters.api + "/api/v1/admin/applications/accept", {
+          method: "post",
+          headers: {
+            "Authorization": this.$store.getters.token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({applicationId: id})
+        }).then(async res => {
+          let json = await res.json()
+          console.log(json, res.status)
+          if (json.success) {
+            fetch(this.$store.getters.api + "/api/v1/admin/applications", {
+              method: "get",
+              headers: {
+                "Authorization": this.$store.getters.token
+              }
+            }).then(async res => {
+              let json = await res.json()
+              console.log(json, res.status)
+              if (json.applicants) {
+                this.$store.commit("applications", json.applicants)
+              } else {
+                this.$swal("Error fetching applications")
+              }
+            })
+            let person = this.focusedApp.firstName
+            this.chosen = false
+
+            this.$swal({
+              icon: "success", title: "Success",
+              text: `${person} has been accepted. They have automatically been sent an acceptance email.`
+            })
+
+          } else {
+            this.$swal({
+              icon: "error", title: "ERROR",
+              text: `${this.focusedApp.firstName} has not been accepted. Please take a screen shot and email Ronan`
+            })
+          }
+        })
+      },
       objList(obj) {
         let terms = []
         Object.keys(obj).forEach(i => {
           if (i === "otherEnabled" && obj.otherEnabled) {
-           // console.log(obj.otherEnabled, obj.other)
+            // console.log(obj.otherEnabled, obj.other)
             terms.push(obj.other)
           } else {
             if (obj[i] && i != "other") {

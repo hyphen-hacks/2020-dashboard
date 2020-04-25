@@ -117,13 +117,14 @@ let focus, blur, tokenRefresh
     mounted() {
      let getToken = (trig) => {
         console.log('token trigger', trig)
-        if (this.$firebase.currentUser) {
+        if (this.$firebase.auth().currentUser) {
           this.$firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((idToken) => {
 
             this.$store.commit("token", idToken)
 
-
           })
+        } else {
+
         }
 
       }
